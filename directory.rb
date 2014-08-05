@@ -2,6 +2,8 @@
 
 #!/usr/bin/env ruby
 
+
+student_count = 24
 #then we print the list of students
 puts "The students of my cohort at Makers Academy"
 puts "----------------"
@@ -30,6 +32,4 @@ puts "David Wickes"
 puts "Chris Oatley"
 puts "Marc Singh"
 #finally we print the total
-print "Overall we have "
-print 24
-puts " great students"
+puts "Overall, we have #{student_count} great students"
