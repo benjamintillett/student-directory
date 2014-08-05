@@ -29,18 +29,29 @@ old_students = [
 ]
 # and then print them
 def input_students
-	puts "Please enter the names of the students"
-	puts "To finish, just hit return twice"
+	puts "Please enter the names and hobbies and cohort of the students"
+	puts "To finish, type quit and hit return twice"
 	# create an empty array
 	students = []
 	# get the first name
 	name = gets.chomp
-	# while the names is not empty, repeat this code
-	while !name.empty? do
+	puts "Please enter his/her hobbie"
+	hobby = gets.chomp
+	puts "Please enter his/her cohort"
+	cohort = gets.chomp
+	# while the names and hobbies are not empty, repeat this code
+	while !name.empty? || !hobby.empty? do
 		#add the student hash to the array
-		students << {:name => name, :cohort => :august}
+		students << {:name => name, :cohort => cohort, :hobby => hobby }
 		puts "Now we have #{students.length} students"
+		puts "Please enter the next students name"
 		name = gets.chomp
+		break if name.empty?
+		puts "Please enter his/her hobby"
+		hobby = gets.chomp
+		break if hobby.empty?
+		puts "Please enter his/her cohort"
+		cohort = gets.chomp
 	end
 	#return the array of students
 	students
@@ -52,8 +63,21 @@ def print_header
 end
 
 def print(students)
-	students.each do |student|
-		puts "#{student[:name]} (#{student[:cohort]} cohort)"
+	students.each_with_index do |student, index|
+		if student[:name].length < 12 && student[:name][0].downcase == "a"
+			puts "#{index+1}.#{student[:name]}, hobby: #{student[:hobby]} (#{student[:cohort]} cohort)"
+		end
+	end
+end
+
+def print2(students)
+	index = 0
+	until index == students.length do 
+		#if student[:name].length < 12 && student[:name][0].downcase == "a"
+			student = students[index]
+			puts "#{index+1}.#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
+		#end
+		index += 1 
 	end
 end
 
@@ -68,6 +92,8 @@ end
 
 students = input_students
 print_header
-print(students)
+print2(students)
 print_footer(students)
+
+# 
 
