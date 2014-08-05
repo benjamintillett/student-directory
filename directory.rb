@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # we shebanged the file
 #then we print the list of students
-students = [
+old_students = [
 	{:name => "Javier Silverio", :cohort => :august},
 	{:name => "Elliot Lewis", :cohort => :august},
 	{:name => "Ben Tillett", :cohort => :august},
@@ -28,6 +28,23 @@ students = [
 	{:name => "Marc Singh", :cohort => :august},
 ]
 # and then print them
+def input_students
+	puts "Please enter the names of the students"
+	puts "To finish, just hit return twice"
+	# create an empty array
+	students = []
+	# get the first name
+	name = gets.chomp
+	# while the names is not empty, repeat this code
+	while !name.empty? do
+		#add the student hash to the array
+		students << {:name => name, :cohort => :august}
+		puts "Now we have #{students.length} students"
+		name = gets.chomp
+	end
+	#return the array of students
+	students
+end
 
 def print_header
 	puts "The students of my cohort at Makers Academy"
@@ -44,6 +61,13 @@ def print_footer(names)
 	#finally, we print the total
 	puts "Overall, we have #{names.length} great students"
 end
+
+#print_header
+#print(students)
+#print_footer(students)
+
+students = input_students
 print_header
 print(students)
 print_footer(students)
+
