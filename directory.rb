@@ -27,38 +27,44 @@ old_students = [
 	{:name => "Chris Oatley", :cohort => :august},
 	{:name => "Marc Singh", :cohort => :august},
 ]
-# and then print them
+
+def get_info(info)
+	puts "Please enter the next students #{info}"
+	temp_info = gets.gsub(/\n/,"")
+	info = temp_info.empty? ? "N/A" : temp_info
+	return info
+end
+
+
+
+
 def input_students
 	puts "Please enter the names and hobbies and cohort of the students"
-	puts "To finish, type quit and hit return twice"
+	puts "To finish, fill in a field with quit and hit return"
 	# create an empty array
 	students = []
-	# get the first name
-	name = gets.chomp
-	puts "Please enter his/her hobbie"
-	hobby = gets.chomp
-	puts "Please enter his/her cohort"
-	cohort = gets.chomp
 	# while the names and hobbies are not empty, repeat this code
-	while !name.empty? || !hobby.empty? do
+	while true do
+		name = get_info("name")
+		break if name == "quit"
+		
+		hobby = get_info("hobby")
+		break if hobby == "quit"
+
+		cohort = get_info("cohort")
+		break if cohort == "quit"
+		cohort.to_sym	
+
 		#add the student hash to the array
 		students << {:name => name, :cohort => cohort, :hobby => hobby }
 		puts "Now we have #{students.length} students"
-		puts "Please enter the next students name"
-		name = gets.chomp
-		break if name.empty?
-		puts "Please enter his/her hobby"
-		hobby = gets.chomp
-		break if hobby.empty?
-		puts "Please enter his/her cohort"
-		cohort = gets.chomp
 	end
 	#return the array of students
 	students
 end
 
-def print_header
-	puts "The students of my cohort at Makers Academy"
+def print_header(number_students)
+	puts "The #{pluralize(number_students,'student')} of my cohort at Makers Academy"
 	puts "----------------"
 end
 
@@ -83,17 +89,48 @@ end
 
 def print_footer(names)
 	#finally, we print the total
-	puts "Overall, we have #{names.length} great students"
+	puts "Overall, we have #{names.length} great #{pluralize(names.length,'student')}"
 end
+
+def get_cohort_list(students)
+	students.map { |student| student[:cohort] }.uniq
+end
+
+def print_by_cohort(students)
+	cohort_list = get_cohort_list(students)
+	cohort_list.each do |cohort| 
+		puts "Students in the #{cohort} cohort:  \n"
+		students.each do |student| 
+			if student[:cohort] == cohort
+				puts "#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
+			end
+		end
+	end
+end	
+
+def pluralize(n,singular,plural=nil)
+	if n == 1 
+		"#{singular}"
+	elsif plural
+		"#{plural}"
+	else
+		"#{singular}s"
+	end
+end
+
+
+puts pluralize(1,"sheep")
+
 
 #print_header
 #print(students)
 #print_footer(students)
 
 students = input_students
-print_header
+print_header(students.length)
 print2(students)
 print_footer(students)
 
+print_by_cohort(students)
 # 
 
