@@ -28,6 +28,16 @@ old_students = [
 	{:name => "Marc Singh", :cohort => :august},
 ]
 
+def pluralize(n,singular,plural=nil)
+	if n == 1 
+		"#{singular}"
+	elsif plural
+		"#{plural}"
+	else
+		"#{singular}s"
+	end
+end
+
 def get_info(info)
 	puts "Please enter the next students #{info}"
 	temp_info = gets.gsub(/\n/,"")
@@ -35,7 +45,9 @@ def get_info(info)
 	return info
 end
 
-
+def print_student(student,index)
+	puts "#{index+1}.#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
+end
 
 
 def input_students
@@ -71,18 +83,16 @@ end
 def print(students)
 	students.each_with_index do |student, index|
 		if student[:name].length < 12 && student[:name][0].downcase == "a"
-			puts "#{index+1}.#{student[:name]}, hobby: #{student[:hobby]} (#{student[:cohort]} cohort)"
+			print_student(student,index)
 		end
 	end
 end
 
-def print2(students)
+def print_students(students)
 	index = 0
 	until index == students.length do 
-		#if student[:name].length < 12 && student[:name][0].downcase == "a"
-			student = students[index]
-			puts "#{index+1}.#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
-		#end
+		student = students[index]
+		print_student(student,index)
 		index += 1 
 	end
 end
@@ -100,37 +110,48 @@ def print_by_cohort(students)
 	cohort_list = get_cohort_list(students)
 	cohort_list.each do |cohort| 
 		puts "Students in the #{cohort} cohort:  \n"
-		students.each do |student| 
+		students.each_with_index do |student,index| 
 			if student[:cohort] == cohort
-				puts "#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
+				print_student(student,index)
 			end
 		end
 	end
 end	
 
-def pluralize(n,singular,plural=nil)
-	if n == 1 
-		"#{singular}"
-	elsif plural
-		"#{plural}"
-	else
-		"#{singular}s"
+def interactive_menu 
+	students = []
+	loop do 
+		puts "1. Input the students"
+		puts "2.Show the Students"
+		puts "9. Exit"
+		selection = gets.chomp
+		case selection
+			when "1"
+				students = input_students
+			when "2"
+				print students
+				print_header(students.length)
+				print_students(students)
+				print_footer(students)
+			when "9"
+				exit
+			else
+				puts "I don't know what you meant, try again"
+		end  
 	end
 end
 
 
-puts pluralize(1,"sheep")
 
 
-#print_header
-#print(students)
+
+
+
+#students = input_students
+#print_header(students.length)
+#print_students(students)
 #print_footer(students)
 
-students = input_students
-print_header(students.length)
-print2(students)
-print_footer(students)
-
-print_by_cohort(students)
-# 
+#print_by_cohort(students)
+interactive_menu
 
