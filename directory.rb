@@ -1,32 +1,5 @@
 #!/usr/bin/env ruby
-# we shebanged the file
-#then we print the list of students
-old_students = [
-	{:name => "Javier Silverio", :cohort => :august},
-	{:name => "Elliot Lewis", :cohort => :august},
-	{:name => "Ben Tillett", :cohort => :august},
-	{:name => "Vincent Koch", :cohort => :august},
-	{:name => "Michelle Ballard", :cohort => :august},
-	{:name => "Nick Roberts", :cohort => :august},
-	{:name => "Tatiana Soukiassian", :cohort => :august},
-	{:name => "Mervé Silk", :cohort => :august},
-	{:name => "Albert Vallverdu", :cohort => :august},
-	{:name => "Lovis Schultze", :cohort => :august},
-	{:name => "Henry Stanley", :cohort => :august},
-	{:name => "Spike Lindsey", :cohort => :august},
-	{:name => "Ruth Earle", :cohort => :august},
-	{:name => "Andy Gates", :cohort => :august},
-	{:name => "Faisal Aydarus", :cohort => :august},
-	{:name => "Ethel Ng", :cohort => :august},
-	{:name => "Kevin Daniells", :cohort => :august},
-	{:name => "Maya Driver", :cohort => :august},
-	{:name => "Leopold Kwok", :cohort => :august},
-	{:name => "James McNeil", :cohort => :august},
-	{:name => "Jerome Pratt", :cohort => :august},
-	{:name => "David Wickes", :cohort => :august},
-	{:name => "Chris Oatley", :cohort => :august},
-	{:name => "Marc Singh", :cohort => :august},
-]
+
 @students = []
 
 def pluralize(n,singular,plural=nil)
@@ -46,28 +19,33 @@ def get_info(info)
 	return info
 end
 
+def get_student_info	
+	name = get_info("name")	
+	return if name == "quit"		
+	hobby = get_info("hobby")
+	return if hobby == "quit"
+	cohort = get_info("cohort").to_sym
+	return if cohort == "quit"
+	[name, hobby, cohort]
+end
+
+def add_student_info(name, cohort, hobby)
+	@students << { :name => name, :cohort => cohort.to_sym, :hobby => hobby }
+end
+
+
 def print_student(student,index)
 	puts "#{index+1}.#{student[:name]}".center(50) + "hobby: #{student[:hobby]}".center(50) + "(#{student[:cohort]} cohort)".center(50)
 end
 
 
 def input_students
-	puts "Please enter the names and hobbies and cohort of the students"
+	puts "Please enter the names, hobbies and cohort of the students"
 	puts "To finish, fill in a field with quit and hit return"
-	# while the names and hobbies are not empty, repeat this code
 	while true do
-		name = get_info("name")
-		break if name == "quit"
-		
-		hobby = get_info("hobby")
-		break if hobby == "quit"
-
-		cohort = get_info("cohort")
-		break if cohort == "quit"
-		cohort.to_sym	
-
-		#add the student hash to the array
-		@students << {:name => name, :cohort => cohort, :hobby => hobby }
+		name, hobby, cohort = get_student_info
+		break if [name, hobby, cohort].any? {|value| value == nil}
+		add_student_info(name, cohort, hobby)
 		puts "Now we have #{@students.length} students"
 	end
 	#return the array of students
@@ -79,20 +57,9 @@ def print_header
 	puts "----------------"
 end
 
-def print_students_list1
-	@students.each_with_index do |student, index|
-		if student[:name].length < 12 && student[:name][0].downcase == "a"
-			print_student(student,index)
-		end
-	end
-end
-
 def print_students_list
-	index = 0
-	until index == @students.length do 
-		student = @students[index]
-		print_student(student,index)
-		index += 1 
+	@students.each_with_index do |student, index|
+		print_student(student,index)		
 	end
 end
 
@@ -156,23 +123,23 @@ end
 
 def save_students
 	# open file for writing
-	file = File.open("students.csv", "w")
-	# iterate over the array of students
-	@students.each do |student|
-		student_data = [student[:name], student[:cohort],student[:hobby]]
-		csv_line = student_data.join(",")
-		file.puts csv_line
+	File.open("students.csv", "w") do |file|
+		# iterate over the array of students
+		@students.each do |student|
+			student_data = [student[:name], student[:cohort],student[:hobby]]
+			csv_line = student_data.join(",")
+			file.puts csv_line
+		end
 	end
-	file.close
 end
 
 def load_students(filename = "students.csv")
-	file = File.open(filename, "r")
-	file.readlines.each do |line|
-		name, cohort, hobby = line.chomp.split(",")
-		@students << { :name => name, :cohort => cohort.to_sym, :hobby => hobby }
+	File.open(filename, "r"). do |file|
+		file.readlines.each do |line|
+			name, cohort, hobby = line.chomp.split(",")
+			add_student_info(name, cohort, hobby)
+		end
 	end
-	file.close
 end
 
 def try_load_students
@@ -186,19 +153,6 @@ def try_load_students
 	end
 end 
 
-
-
-
-
-
-
-
-#students = input_students
-#print_header(students.length)
-#print_students(students)
-#print_footer(students)
-
-#print_by_cohort(students)
 try_load_students
 interactive_menu
 
