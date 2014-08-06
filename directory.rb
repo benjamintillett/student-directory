@@ -41,7 +41,7 @@ end
 
 def get_info(info)
 	puts "Please enter the next students #{info}"
-	temp_info = gets.gsub(/\n/,"")
+	temp_info = STDIN.gets.gsub(/\n/,"")
 	info = temp_info.empty? ? "N/A" : temp_info
 	return info
 end
@@ -150,7 +150,7 @@ end
 def interactive_menu 
 	loop do 
 		print_menu
-		process(gets.chomp) 
+		process(STDIN.gets.chomp) 
 	end
 end
 
@@ -166,14 +166,25 @@ def save_students
 	file.close
 end
 
-def load_students
-	file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+	file = File.open(filename, "r")
 	file.readlines.each do |line|
 		name, cohort, hobby = line.chomp.split(",")
 		@students << { :name => name, :cohort => cohort.to_sym, :hobby => hobby }
 	end
 	file.close
 end
+
+def try_load_students
+	filename = ARGV.first #first argument read from the command line
+	return if filename.nil? #get out of the method if it isn't given
+	if File.exists?(filename) # if it exists 
+		load_students(filename)
+	else # if it doesn't exist
+		puts "Sorry, #{filename} doesn't exist."
+		exit # quit the program
+	end
+end 
 
 
 
@@ -188,5 +199,6 @@ end
 #print_footer(students)
 
 #print_by_cohort(students)
+try_load_students
 interactive_menu
 
