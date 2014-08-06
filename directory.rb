@@ -27,6 +27,7 @@ old_students = [
 	{:name => "Chris Oatley", :cohort => :august},
 	{:name => "Marc Singh", :cohort => :august},
 ]
+@students = []
 
 def pluralize(n,singular,plural=nil)
 	if n == 1 
@@ -53,8 +54,6 @@ end
 def input_students
 	puts "Please enter the names and hobbies and cohort of the students"
 	puts "To finish, fill in a field with quit and hit return"
-	# create an empty array
-	students = []
 	# while the names and hobbies are not empty, repeat this code
 	while true do
 		name = get_info("name")
@@ -68,49 +67,49 @@ def input_students
 		cohort.to_sym	
 
 		#add the student hash to the array
-		students << {:name => name, :cohort => cohort, :hobby => hobby }
-		puts "Now we have #{students.length} students"
+		@students << {:name => name, :cohort => cohort, :hobby => hobby }
+		puts "Now we have #{@students.length} students"
 	end
 	#return the array of students
-	students
+	@students
 end
 
-def print_header(number_students)
-	puts "The #{pluralize(number_students,'student')} of my cohort at Makers Academy"
+def print_header
+	puts "The #{pluralize(@students.length,'student')} of my cohort at Makers Academy"
 	puts "----------------"
 end
 
-def print(students)
-	students.each_with_index do |student, index|
+def print_students_list1
+	@students.each_with_index do |student, index|
 		if student[:name].length < 12 && student[:name][0].downcase == "a"
 			print_student(student,index)
 		end
 	end
 end
 
-def print_students(students)
+def print_students_list
 	index = 0
-	until index == students.length do 
-		student = students[index]
+	until index == @students.length do 
+		student = @students[index]
 		print_student(student,index)
 		index += 1 
 	end
 end
 
-def print_footer(names)
+def print_footer
 	#finally, we print the total
-	puts "Overall, we have #{names.length} great #{pluralize(names.length,'student')}"
+	puts "Overall, we have #{@students.length} great #{pluralize(@students.length,'student')}"
 end
 
-def get_cohort_list(students)
-	students.map { |student| student[:cohort] }.uniq
+def get_cohort_list
+	@students.map { |student| student[:cohort] }.uniq
 end
 
-def print_by_cohort(students)
-	cohort_list = get_cohort_list(students)
+def print_by_cohort
+	cohort_list = get_cohort_list
 	cohort_list.each do |cohort| 
 		puts "Students in the #{cohort} cohort:  \n"
-		students.each_with_index do |student,index| 
+		@students.each_with_index do |student,index| 
 			if student[:cohort] == cohort
 				print_student(student,index)
 			end
@@ -118,26 +117,36 @@ def print_by_cohort(students)
 	end
 end	
 
+def print_menu
+	puts "1. Input the students"
+	puts "2.Show the Students"
+	puts "9. Exit"
+end
+def show_students
+	print_header
+	print_students_list
+	print_footer
+end
+
+def process(selection)
+	case selection		
+		when "1"
+			@students = input_students
+		when "2"
+			show_students
+		when "9"
+			exit
+		else
+			puts "I don't know what you meant, try again"
+	end
+end 
+
+
+
 def interactive_menu 
-	students = []
 	loop do 
-		puts "1. Input the students"
-		puts "2.Show the Students"
-		puts "9. Exit"
-		selection = gets.chomp
-		case selection
-			when "1"
-				students = input_students
-			when "2"
-				print students
-				print_header(students.length)
-				print_students(students)
-				print_footer(students)
-			when "9"
-				exit
-			else
-				puts "I don't know what you meant, try again"
-		end  
+		print_menu
+		process(gets.chomp) 
 	end
 end
 
